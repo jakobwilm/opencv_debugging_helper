@@ -1,9 +1,4 @@
 #
-# Add this file to "Options->Debugger->GDB->Extra Debugging Helpers" (from QtCreator 4.x)
-#
-# In QtCreator 3.x, put the following line in "Additional Startup Commands"
-# python exec(open("/path/to/opencv_debugging_helper.py").read())
-#
 
 import dumper
 import numpy
