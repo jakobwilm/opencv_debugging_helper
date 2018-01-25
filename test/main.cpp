@@ -17,9 +17,9 @@ int main(int argc, char *argv[])
         for(int j=0; j<2; j++)
             mat.at<cv::Vec3f>(i,j) = cv::Vec3f(i+j, i+j+ 4, i+j+ 8);
 
-    mat = mat.clone();
+    cv::Mat mat2 = mat.clone();
 
-    //QImage im("tex.jpeg");
+    QImage im("tex.jpeg");
 
 
     return 0;

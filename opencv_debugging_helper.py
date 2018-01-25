@@ -15,8 +15,10 @@ def qdump__cv__Mat(d, value):
     channels = 1 + (flags >> 3) & 63
     rows = int(value['rows'])
     cols = int(value['cols'])
-    d.putValue('(%dx%dx%d)' % (rows, cols, channels))
-
+    if channels == 1:
+        d.putValue('(%dx%d)' % (rows, cols))
+    else:
+        d.putValue('(%dx%d) %d channels' % (rows, cols, channels))
     depth = flags & 7
     if depth == 0:
         typeName = 'uchar'
