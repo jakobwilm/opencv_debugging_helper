@@ -1,24 +1,21 @@
-#
-
 import dumper
 import numpy
 
+
 def qform__cv__Mat():
     return [dumper.SimpleFormat, dumper.SeparateFormat]
-    #return ["Normal", "Displayed"]
-    #return [1, 2]
+    # return ["Normal", "Displayed"]
+    # return [1, 2]
 
-def qdump__cv__Mat(d, value):
-    #ptrSize = d.ptrSize()
+
+def qdump__cv__Mat(d: dumper.DumperBase, value: dumper.DumperBase.Value) -> None:
+    # ptrSize = d.ptrSize()
 
     flags = value['flags'].integer()
     channels = 1 + (flags >> 3) & 63
     rows = int(value['rows'])
     cols = int(value['cols'])
-    if channels == 1:
-        d.putValue('(%dx%d)' % (rows, cols))
-    else:
-        d.putValue('(%dx%d) %d channels' % (rows, cols, channels))
+
     depth = flags & 7
     if depth == 0:
         typeName = 'uchar'
@@ -49,17 +46,18 @@ def qdump__cv__Mat(d, value):
         cvTypeName = 'CV_64F'
         elemSize = 8
 
+    d.putValue('%dx%d %sC%d' % (rows, cols, cvTypeName, channels))
+
     address = value["data"].pointer()
     step = value['step']['p'].dereference().integer()
 
-    #data = v['data'].cast(gdb.lookup_type("char").pointer())
     d.putNumChild(1)
     if d.isExpanded():
         with dumper.Children(d):
-            #d.putIntItem('width', width)
+            # d.putIntItem('width', width)
             d.putIntItem('cols', cols)
             d.putIntItem('channels', channels)
-            #d.putIntItem('data', value['data'])
+            # d.putIntItem('data', value['data'])
             d.putIntItem('dims', value['dims'])
             d.putIntItem('rows', rows)
             d.putIntItem('size', value['size']['p'].dereference())
@@ -71,20 +69,19 @@ def qdump__cv__Mat(d, value):
             d.putIntItem('refcount', value['u']['refcount'])
 
             with dumper.SubItem(d, "data"):
-                d.putValue("0x%x" % value["data"].integer())
-                d.putNumChild(rows)
-                base = value["data"].dereference()
-                #elemSize = base.type.size()
-                elemSize = 8
-                with dumper.Children(d):
-                    for i in range(rows):
-                        if channels == 1:
-                            d.putArrayItem('[%d]' % i, address + i*step, cols, typeName)
-                        else:
-                            with dumper.SubItem(d, '[%d]' % i):
-                                with dumper.Children(d):
-                                    for j in range(cols):
-                                        d.putArrayItem('[%d]' % j, address + i*step + j*channels*elemSize, channels, typeName)
+                # if d.isExpanded():
+                    d.putValue("0x%x" % value["data"].integer())
+                    d.putNumChild(rows)
+                    # base = value["data"].dereference()
+                    with dumper.Children(d):
+                        for i in range(rows):
+                            if channels == 1:
+                                d.putArrayItem('[%d]' % i, address + i*step, cols, typeName)
+                            else:
+                                with dumper.SubItem(d, '[%d]' % i):
+                                    with dumper.Children(d):
+                                        for j in range(cols):
+                                            d.putArrayItem('[%d]' % j, address + i*step + j*channels*elemSize, channels, typeName)
 
     format = d.currentItemFormat()
     if format == dumper.SeparateFormat:
@@ -100,6 +97,7 @@ def qdump__cv__Mat(d, value):
             # d.put(img.data)
             # d.put('",')
             d.putDisplay('imagedata:separate', '%08x%08x%08x%08x' % (cols, rows, cols*rows, 1) + d.readMemory(value["data"], cols*rows))
+
 
 def qdump__cv__Size_(d, value):
     height = value['height']
