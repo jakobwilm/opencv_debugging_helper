@@ -1,9 +1,9 @@
 # Opencv Debugging Helper
 Debugging helper for OpenCV in QtCreator. 
 
-Developed and tested for OpenCV 3.X, QtCreator 4.5.2 with GDB built against Python 3.
+Developed and tested for OpenCV 3.X, QtCreator 4.5.2 (Ubuntu 18.04) with GDB built against Python 3.
 
-Note that QtCreator 4.5 ships with a (very) rudimentary debugging helper for cv::Mat.
+Note that QtCreator 4.5 ships with a (very) rudimentary debugging helper for cv::Mat. If this debugging helper is successfully loaded, it will override the built-in.
 
 This was created because none of the available projects that I could find currently work with these versions of QtCreator and Python. A future goal is to enable visual debugging of cv::Mat.
 
