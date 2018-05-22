@@ -4,12 +4,16 @@ import numpy
 
 def qform__cv__Mat():
     return [dumper.SimpleFormat, dumper.SeparateFormat]
-    # return ["Normal", "Displayed"]
-    # return [1, 2]
 
 
-def qdump__cv__Mat(d: dumper.DumperBase, value: dumper.DumperBase.Value) -> None:
+def qdump__cv__Mat(d, value):
     # ptrSize = d.ptrSize()
+
+    dims = value['dims'].integer()
+    if dims != 2:
+        d.putEmptyValue()
+        d.putPlainChildren(value)
+        return
 
     flags = value['flags'].integer()
     channels = 1 + (flags >> 3) & 63
